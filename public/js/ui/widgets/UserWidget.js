@@ -12,7 +12,10 @@ class UserWidget {
    * необходимо выкинуть ошибку.
    * */
   constructor(element){
-
+    if (!element) {
+      throw new Error('Параметр element класса UserWidget не задан');
+    }
+    this.element = element;
   }
 
   /**
@@ -23,6 +26,12 @@ class UserWidget {
    * авторизованного пользователя
    * */
   update(){
+    const userData = User.current();
 
+    if (userData) {
+      const userName = document.getElementsByClassName('user-name')[0];
+
+      userName.textContent = userData.name;
+    }
   }
 }
