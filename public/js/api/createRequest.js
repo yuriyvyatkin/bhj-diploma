@@ -1,9 +1,9 @@
 const callback = (error, response) => {
   if (error) {
-    if (typeof error === 'object') {
+    if (typeof error === 'object' && err.length > 0) {
       throw new Error(Object.values(err).join(' '));
     }
-    throw new Error(error);
+    throw new Error(JSON.stringify(error));
   } else {
     return response;
   }

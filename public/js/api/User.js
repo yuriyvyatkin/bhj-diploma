@@ -4,8 +4,8 @@
  * Имеет свойство URL, равное '/user'.
  * */
 class User {
-  constructor() {
-    this.URL = '/user';
+  static get URL() {
+    return '/user';
   }
 
   /**
@@ -41,17 +41,17 @@ class User {
    * авторизованном пользователе.
    * */
   static fetch(callback) {
-    return createRequest({
+    createRequest({
       url: this.URL + '/current',
       responseType: 'json',
       method: 'GET',
       callback: (err, response) => {
-        if (response?.user) {
-          this.setCurrent(response.user);
+        const xhr = callback(err, response);
+        if (xhr?.user) {
+          User.setCurrent(xhr.user);
         } else {
-          this.unsetCurrent();
+          User.unsetCurrent();
         }
-        callback(err, response);
       }
     });
   }
@@ -63,16 +63,14 @@ class User {
    * User.setCurrent.
    * */
   static login(data, callback) {
-    return createRequest({
+    createRequest({
       url: this.URL + '/login',
       data: data,
       responseType: 'json',
       method: 'POST',
       callback: (err, response) => {
-        if (response?.user) {
-          this.setCurrent(response.user);
-        }
-        callback(err, response);
+        const xhr = callback(err, response);
+        User.setCurrent(xhr.user);
       }
     });
   }
@@ -84,16 +82,14 @@ class User {
    * User.setCurrent.
    * */
   static register(data, callback) {
-    return createRequest({
+    createRequest({
       url: this.URL + '/register',
       data: data,
       responseType: 'json',
       method: 'POST',
-      callback: (err = null, response) => {
-        if (response?.user) {
-          this.setCurrent(response.user);
-        }
-        callback(err, response);
+      callback: (err, response) => {
+        const xhr = callback(err, response);
+        User.setCurrent(xhr.user);
       }
     });
   }
@@ -103,16 +99,14 @@ class User {
    * выхода необходимо вызвать метод User.unsetCurrent
    * */
   static logout(data, callback) {
-    return createRequest({
+    createRequest({
       url: this.URL + '/logout',
       data: data,
       responseType: 'json',
       method: 'POST',
       callback: (err, response) => {
-        if (response.success) {
-          this.unsetCurrent();
-        }
         callback(err, response);
+        User.unsetCurrent();
       }
     });
   }
