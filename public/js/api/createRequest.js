@@ -60,6 +60,6 @@ const createRequest = (options) => {
     }
   }
   catch (e) {
-    throw new Error(e);
+    callback(e);
   }
 };
