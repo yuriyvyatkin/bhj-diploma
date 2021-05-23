@@ -10,7 +10,7 @@ class TransactionsPage {
    * Сохраняет переданный элемент и регистрирует события
    * через registerEvents()
    * */
-  constructor( element ) {
+  constructor(element) {
     if (!element) {
       throw new Error('Параметр element класса TransactionsPage не задан');
     }
@@ -23,7 +23,7 @@ class TransactionsPage {
    * Вызывает метод render для отрисовки страницы
    * */
   update() {
-    page.render(this.lastOptions);
+    this.render(this.lastOptions);
   }
 
   /**
@@ -33,18 +33,19 @@ class TransactionsPage {
    * TransactionsPage.removeAccount соответственно
    * */
   registerEvents() {
-    const removeAccount = document.querySelector('.remove-account');
-    const removeButtons = document.querySelectorAll('.transaction__remove');
+    const deleteAccount = this.element.querySelector('.remove-account');
 
-    removeAccount.onclick = () => {
-      this.removeAccount();
-    }
+    deleteAccount.onclick = () => this.removeAccount();
 
-    for (const removeButton of removeButtons) {
-      removeButton.onclick = (event) => {
-        this.removeTransaction(event.target.dataset.id);
+    const clickHandler = (event) => {
+      const target = event.target.closest('.transaction__remove');
+
+      if (target) {
+        this.removeTransaction(target.dataset.id);
       }
     }
+
+    this.element.addEventListener('click', clickHandler);
   }
 
   /**
@@ -60,8 +61,17 @@ class TransactionsPage {
     if (this.lastOptions) {
       const confirmation = window.confirm('Вы действительно хотите удалить счёт?');
 
-      if (confirmation && Account.remove(this.lastOptions, callback)) {
-        App.updateWidgets();
+      if (confirmation) {
+        const callback = (error) => {
+          if (error) {
+            handleError(error);
+          } else {
+            App.updateWidgets();
+            this.clear();
+          }
+        }
+
+        Account.remove({id: this.lastOptions.account_id}, callback);
       }
     }
   }
@@ -75,8 +85,17 @@ class TransactionsPage {
   removeTransaction(id) {
     const confirmation = window.confirm('Вы действительно хотите удалить эту транзакцию?');
 
-    if (confirmation && Transaction.remove(id, callback)) {
-      App.update();
+    if (confirmation) {
+      const callback = (error) => {
+        if (error) {
+          handleError(error);
+        } else {
+          App.getWidget("accounts").update();
+          this.update();
+        }
+      }
+
+      Transaction.remove({id}, callback);
     }
   }
 
@@ -90,15 +109,25 @@ class TransactionsPage {
     if (options) {
       this.lastOptions = options;
 
-      const account = Account.get(options.id, callback);
-
-      if (account) {
-        this.renderTitle(account.name);
+      let callback = (error, response) => {
+        if (error) {
+          handleError(error);
+        } else {
+          this.renderTitle(response.data.name);
+        }
       }
 
-      const transactions = Transaction.list(options, callback);
+      Account.get(options.account_id, callback);
 
-      this.renderTransactions(transactions);
+      callback = (error, response) => {
+        if (error) {
+          handleError(error);
+        } else {
+          this.renderTransactions(response.data);
+        }
+      };
+
+      Transaction.list(options.account_id, callback);
     }
   }
 
@@ -117,7 +146,7 @@ class TransactionsPage {
    * Устанавливает заголовок в элемент .content-title
    * */
   renderTitle(name){
-    const contentTitle = document.querySelector('.content-title');
+    const contentTitle = this.element.querySelector('.content-title');
 
     contentTitle.textContent = name;
   }
@@ -158,7 +187,7 @@ class TransactionsPage {
         </div>
         <div class="col-md-2 transaction__controls">
             <button class="btn btn-danger transaction__remove" data-id="${item.id}">
-                <i class="fa fa-trash"></i>  
+                <i class="fa fa-trash"></i>
             </button>
         </div>
       </div>
@@ -169,7 +198,7 @@ class TransactionsPage {
    * Отрисовывает список транзакций на странице
    * используя getTransactionHTML
    * */
-  renderTransactions(data){
+  renderTransactions(data) {
     let html = '';
 
     for (const item of data) {
@@ -177,6 +206,7 @@ class TransactionsPage {
     }
 
     const content = this.element.querySelector('.content');
+    content.textContent = '';
 
     content.insertAdjacentHTML('beforeend', html);
   }

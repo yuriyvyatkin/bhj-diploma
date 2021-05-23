@@ -1,11 +1,18 @@
-const callback = (error, response) => {
-  if (error) {
-    if (typeof error === 'object' && err.length > 0) {
-      throw new Error(Object.values(err).join(' '));
+const handleError = (error) => {
+  if (App.state !== 'init' && Object.keys(error).length) {
+    let content = 'Сервер сообщил об ошибке: ';
+
+    if (typeof error === 'object') {
+      content += Object.values(error).join(' ');
+    } else {
+      content += error;
     }
-    throw new Error(JSON.stringify(error));
-  } else {
-    return response;
+
+    if (/[^.]$/.test(content)) {
+      content += '.';
+    }
+
+    console.error(content);
   }
 }
 
@@ -16,7 +23,6 @@ const callback = (error, response) => {
 const createRequest = (options) => {
   if (!options) {
     throw new Error('Параметр options функции createRequest не задан');
-    return;
   }
 
   let {url, headers, data, responseType, method, callback} = options;
@@ -37,18 +43,14 @@ const createRequest = (options) => {
       if (String(xhr.status).startsWith('2')) {
         callback(xhr.response?.error, xhr.response);
       } else {
-        throw new Error (`Ошибка ${xhr.status}: ${xhr.statusText}`);
+        let content = 'Сервер не принял запрос. ';
+        content += `Ошибка ${xhr.status}: ${xhr.statusText}.`;
+        console.error(content);
       }
     }
 
-    if (method === 'GET') {
-      let params = [];
-
-      for (const [key, value] of Object.entries(data)) {
-        params.push(`${key}=${value}`);
-      }
-
-      xhr.send(params.join('&'));
+    if (data === undefined) {
+      xhr.send();
     } else {
       const formData = new FormData();
 
@@ -60,6 +62,6 @@ const createRequest = (options) => {
     }
   }
   catch (e) {
-    callback(e);
+    console.error(e);
   }
 };

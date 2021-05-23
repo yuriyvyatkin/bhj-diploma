@@ -45,13 +45,13 @@ class User {
       url: this.URL + '/current',
       responseType: 'json',
       method: 'GET',
-      callback: (err, response) => {
-        const xhr = callback(err, response);
-        if (xhr?.user) {
-          User.setCurrent(xhr.user);
+      callback: (_, response) => {
+        if (response?.user) {
+          User.setCurrent(response.user);
         } else {
           User.unsetCurrent();
         }
+        callback();
       }
     });
   }
@@ -68,9 +68,13 @@ class User {
       data: data,
       responseType: 'json',
       method: 'POST',
-      callback: (err, response) => {
-        const xhr = callback(err, response);
-        User.setCurrent(xhr.user);
+      callback: (error, response) => {
+        if (error) {
+          callback(error);
+        } else {
+          User.setCurrent(response.user);
+          callback();
+        }
       }
     });
   }
@@ -87,9 +91,13 @@ class User {
       data: data,
       responseType: 'json',
       method: 'POST',
-      callback: (err, response) => {
-        const xhr = callback(err, response);
-        User.setCurrent(xhr.user);
+      callback: (error, response) => {
+        if (error) {
+          callback(error);
+        } else {
+          User.setCurrent(response.user);
+          callback();
+        }
       }
     });
   }
@@ -104,9 +112,13 @@ class User {
       data: data,
       responseType: 'json',
       method: 'POST',
-      callback: (err, response) => {
-        callback(err, response);
-        User.unsetCurrent();
+      callback: (error) => {
+        if (error) {
+          callback(error);
+        } else {
+          User.unsetCurrent();
+          callback();
+        }
       }
     });
   }

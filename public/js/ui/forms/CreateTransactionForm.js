@@ -9,6 +9,10 @@ class CreateTransactionForm extends AsyncForm {
    * */
   constructor(element) {
     super(element);
+    if (!element) {
+      throw new Error('Параметр element класса CreateTransactionForm не задан');
+    }
+    this.element = element;
 
     this.renderAccountsList();
   }
@@ -18,15 +22,26 @@ class CreateTransactionForm extends AsyncForm {
    * Обновляет в форме всплывающего окна выпадающий список
    * */
   renderAccountsList() {
-    const userData = User.current();
-    // const accountsList = Account.list(userData, callback);
-    const selectBox = this.element.querySelector('.accounts-select');
+    const user = User.current();
 
-    // for (const account of accountsList) {
-    //   selectBox.insertAdjacentHTML('beforeend', `
-    //     <option value="${account.id}">${account.name}</option>
-    //   `)
-    // }
+    const callback = (error, response) => {
+      if (error) {
+        handleError(error);
+      } else {
+        const selectBox = this.element.querySelector('.accounts-select');
+        selectBox.textContent = '';
+        let html = '';
+        for (const account of response.data) {
+          html += `
+            <option value="${account.id}">${account.name}</option>
+          `;
+        }
+
+        selectBox.insertAdjacentHTML('beforeend', html);
+      }
+    }
+
+    Account.list(user, callback);
   }
 
   /**
@@ -36,14 +51,22 @@ class CreateTransactionForm extends AsyncForm {
    * в котором находится форма
    * */
   onSubmit(data) {
-    const form = new AsyncForm(this.element.querySelector('.form'));
+    const callback = (error) => {
+      if (error) {
+        handleError(error);
+      } else {
+        this.element.reset();
+        if (App.getModal('newIncome')) {
+          App.getModal('newIncome').close();
+        }
+        if (App.getModal('newExpense')) {
+          App.getModal('newExpense').close();
+        }
+        App.getWidget("accounts").update();
+        App.getPage("transactions").update();
+      }
+    }
 
-    Transaction.create(form.getData());
-
-    App.getModal('newIncome').close();
-    App.getModal('newIncome').querySelector('.form').reset();
-    App.getModal('newExpense').close();
-    App.getModal('newExpense').querySelector('.form').reset();
-    App.update();
+    Transaction.create(data, callback);
   }
 }

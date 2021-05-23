@@ -49,11 +49,15 @@ class Sidebar {
         }
       } else if (item.classList.contains('menu-item_logout')) {
         handler = () => {
-          User.logout(User.current(), callback);
+          const callback = (error) => {
+            if (error) {
+              handleError(error);
+            } else {
+              App.setState('init');
+            }
+          };
 
-          if (!User.current()) {
-            App.setState('init');
-          }
+          User.logout(User.current(), callback);
         }
       }
 

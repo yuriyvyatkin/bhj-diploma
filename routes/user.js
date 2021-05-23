@@ -59,8 +59,9 @@ router.post("/login",upload.none(), function(request, response) {
         //отправляется авторизованный пользователь
         response.json({success: true, user: foundedUser});
     }
-    else//если пользователь не существует, то отправляется ответ с ошибкой о ненахождении пользователя
+    else{//если пользователь не существует, то отправляется ответ с ошибкой о ненахождении пользователя
         response.json({success: false, error:`Пользователь c email ${email} и паролем ${password} не найден`});
+    }
 })
 
 //запрос разлогина пользователя

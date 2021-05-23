@@ -11,7 +11,7 @@ class TransactionsWidget {
    * Если переданный элемент не существует,
    * необходимо выкинуть ошибку.
    * */
-  constructor( element ) {
+  constructor(element) {
     if (!element) {
       throw new Error('Параметр element класса TransactionsWidget не задан');
     }
@@ -27,14 +27,10 @@ class TransactionsWidget {
    * экземпляра окна
    * */
   registerEvents() {
-    this.element.addEventListener('click', (event) => {
-      const {target} = event;
+    const income = this.element.querySelector('.btn-success');
+    const expense = this.element.querySelector('.btn-danger');
 
-      if (target.classList.contains('btn-success')) {
-        App.getModal('newIncome').open();
-      } else if (target.classList.contains('btn-danger')) {
-        App.getModal('newExpense').open();
-      }
-    })
+    income.onclick = () => App.getModal('newIncome').open();
+    expense.onclick = () => App.getModal('newExpense').open();
   }
 }
