@@ -2,12 +2,12 @@
 
 ## Общее описание
 
-Необходимо разработать страницу *TransactionsPage* 
+Необходимо разработать страницу *TransactionsPage*
 (файл *public/js/ui/pages/TransactionsPage.js*)
 
 ## TransactionsPage
 
-Класс *TransactionsPage* отвечает за единственную страницу 
+Класс *TransactionsPage* отвечает за единственную страницу
 приложения, которая:
 
 1. Отображает список транзакций счёта
@@ -49,8 +49,8 @@
 6. *update* перерисовывает страницу в случае, если была добавлена
 новая транзакция или удалена имеющаяся
 7. *clear* очищает страницу
-8. *formatDate* - преобразует дату 
-9. *getTransactionHTML* формирует HTML-код транзакции 
+8. *formatDate* - преобразует дату
+9. *getTransactionHTML* формирует HTML-код транзакции
 10. *renderTransactions* отрисовывает список транзакций
 
 ### constructor
@@ -76,14 +76,14 @@
 
 ```html
 <button class="btn btn-danger transaction__remove" data-id="41">
-    <i class="fa fa-trash"></i>  
+    <i class="fa fa-trash"></i>
 </button>
 ```
 
 1. При нажатии на кнопку удаления счёта *.remove-account*,
 необходимо вызвать метод *removeAccount*
-2. При нажатии на кнопку удаления транзакции 
-*.transaction__remove*, необходимо вызвать метод 
+2. При нажатии на кнопку удаления транзакции
+*.transaction__remove*, необходимо вызвать метод
 *removeTransaction* и передать туда идентификатор транзакции
 
 ### render
@@ -98,12 +98,12 @@
 
 Если объект *options* не передан, метод не должен работать.
 
-Для работы метода *update* следует сохранить *options* в 
+Для работы метода *update* следует сохранить *options* в
 свойство *lastOptions*.
 
 Важные особенности:
 
-1. Метод получает данные о счёте через *Account.get()* и в 
+1. Метод получает данные о счёте через *Account.get()* и в
 случае успеха вызывает *renderTitle* для отрисовки названия счёта
 2. Метод получает список доходов и расходов пользователя через
 *Transaction.list* и отрисовывает данные через
@@ -134,7 +134,7 @@
 
 1. Вызывает метод *render()*
 2. В случае, если метод *render()* был ранее вызван с
-какими-то опциями, при вызове *update()* эти опции 
+какими-то опциями, при вызове *update()* эти опции
 необходимо передать повторно
 
 ### clear
@@ -199,7 +199,7 @@ page.formatDate( '2019-03-10 03:20:41' ); // 10 марта 2019 г. в 03:20
       </div>
     </div>
     <div class="col-md-3">
-      <div class="transaction__summ">
+      <div class="transaction__sum">
       <!--  сумма -->
           200 <span class="currency">₽</span>
       </div>
@@ -207,7 +207,7 @@ page.formatDate( '2019-03-10 03:20:41' ); // 10 марта 2019 г. в 03:20
     <div class="col-md-2 transaction__controls">
         <!-- в data-id нужно поместить id -->
         <button class="btn btn-danger transaction__remove" data-id="12">
-            <i class="fa fa-trash"></i>  
+            <i class="fa fa-trash"></i>
         </button>
     </div>
 </div>

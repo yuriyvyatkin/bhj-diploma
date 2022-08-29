@@ -25,7 +25,7 @@ class UserWidget {
    * в элемент .user-name устанавливает имя
    * авторизованного пользователя
    * */
-  update(){
+  update() {
     const name = User.current().name;
 
     if (name) {

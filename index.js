@@ -10,10 +10,13 @@ const low = require('lowdb');
 const FileSync = require('lowdb/adapters/FileSync', {
     serialize: (data) => encrypt(JSON.stringify(data)),
     deserialize: (data) => JSON.parse(decrypt(data))
-  });
+});
+
 const db = low(new FileSync('db.json'));
-if(!db.get('users').value())
-    setDefaultUser(db);
+
+if (!db.get('users').value()) {
+  setDefaultUser(db);
+}
 
 const app = express();
 app.use(express.static(`${__dirname}/${PUBLIC_PATH}`));
@@ -35,7 +38,7 @@ app.get('*', function (_, res) {
 app.listen(PORT, () => console.log(`Server started at ${PORT}`));
 
 
-function setDefaultUser(database){
+function setDefaultUser(database) {
     database.defaults({
         users: [
           { name: "demo", email: "demo@demo", password: "demo", id: "1" }
@@ -62,5 +65,5 @@ function setDefaultUser(database){
             { account_id: "3", created_at: "2017-09-15 13:27:02", id: "14", name: "На охрану", sum: 60000, type: "expense", user_id: "1" },
             { account_id: "3", created_at: "2017-10-15 13:27:02", id: "15", name: "На бумер", sum: 300000, type: "expense", user_id: "1" }
         ]
-      }).write()
+    }).write()
 }

@@ -105,7 +105,7 @@ class TransactionsPage {
    * Получает список Transaction.list и полученные данные передаёт
    * в TransactionsPage.renderTransactions()
    * */
-  render(options){
+  render(options) {
     if (options) {
       this.lastOptions = options;
 
@@ -145,7 +145,7 @@ class TransactionsPage {
   /**
    * Устанавливает заголовок в элемент .content-title
    * */
-  renderTitle(name){
+  renderTitle(name) {
     const contentTitle = this.element.querySelector('.content-title');
 
     contentTitle.textContent = name;
@@ -155,7 +155,7 @@ class TransactionsPage {
    * Форматирует дату в формате 2019-03-10 03:20:41 (строка)
    * в формат «10 марта 2019 г. в 03:20»
    * */
-  formatDate(date){
+  formatDate(date) {
     const fullDate = new Date(date);
     const options = {dateStyle: 'long', timeStyle: 'short'};
     const formatedDate = new Intl.DateTimeFormat('ru-RU', options).format(fullDate);
@@ -180,7 +180,7 @@ class TransactionsPage {
           </div>
         </div>
         <div class="col-md-3">
-          <div class="transaction__summ">
+          <div class="transaction__sum">
             ${item.sum}
             <span class="currency">₽</span>
           </div>

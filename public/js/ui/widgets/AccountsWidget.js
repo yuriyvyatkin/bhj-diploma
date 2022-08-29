@@ -121,7 +121,7 @@ class AccountsWidget {
    * отображения в боковой колонке.
    * item - объект с данными о счёте
    * */
-  getAccountHTML(item){
+  getAccountHTML(item) {
     return `
       <li class="account" data-id="${item.id}">
         <a href="#">
@@ -138,7 +138,7 @@ class AccountsWidget {
    * AccountsWidget.getAccountHTML HTML-код элемента
    * и добавляет его внутрь элемента виджета
    * */
-  renderItem(data){
+  renderItem(data) {
     this.element.insertAdjacentHTML('beforeend', this.getAccountHTML(data));
   }
 }
